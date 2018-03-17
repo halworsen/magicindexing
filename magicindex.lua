@@ -15,6 +15,7 @@
 -- Basic matcher for an index function
 -- Matches for:
 --  GetKey
+--  GETKEY
 --  getkey
 --  getKey
 --  get_key
@@ -22,9 +23,11 @@
 local function indexer_match(table, key)
 	local capitalized = key:gsub("^%l", string.upper)
 	local lower_case = string.lower(key)
+	local upper_case = string.upper(key)
 
 	local tests = {
 		"Get"..capitalized,
+		"GET"..upper_case,
 		"get"..lower_case,
 		"get"..capitalized,
 		"get_"..lower_case,

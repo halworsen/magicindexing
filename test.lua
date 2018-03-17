@@ -1,4 +1,4 @@
-dofile("magicindex.lua")
+local mi = require("magicindex")
 
 local test_table = mi.wrap({
 	["foo"] = 5,

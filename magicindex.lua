@@ -72,7 +72,7 @@ end
 --    Wrapping   --
 -------------------
 
-mi = mi or {}
+local mi = {}
 
 function mi.wrap(table)
 	local wrapper = setmetatable({}, MI_META)
@@ -80,3 +80,5 @@ function mi.wrap(table)
 
 	return wrapper
 end
+
+return mi

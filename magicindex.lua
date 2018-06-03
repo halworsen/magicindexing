@@ -12,34 +12,26 @@
 --    Utility    --
 -------------------
 
--- Basic matcher for an index function
--- Matches for:
---  GetKey
---  GETKEY
---  getkey
---  getKey
---  get_key
---  get_Key
-local function indexer_match(table, key)
-	local capitalized = key:gsub("^%l", string.upper)
-	local lower_case = string.lower(key)
-	local upper_case = string.upper(key)
+-- Finds the indexer function for a key
+local function get_indexer(table, key)
+	-- match the specific word getkey with arbitrary case on each letter, optionally with underscore
+	local pattern = "^[gG][eE][tT]_?"
+	for i = 1,#key do
+		local letter = string.sub(key, i, i)
+		local letter_upper = string.upper(letter)
+		pattern = pattern .. "[" .. letter .. letter_upper .. "]"
+	end
+	pattern = pattern .. "$"
 
-	local tests = {
-		"Get"..capitalized,
-		"GET"..upper_case,
-		"get"..lower_case,
-		"get"..capitalized,
-		"get_"..lower_case,
-		"get_"..capitalized,
-	}
-
-	for k, name in pairs(tests) do
-		local indexer = rawget(table, name)
-		if indexer then
-			return indexer
+	for k,v in pairs(table) do
+		if string.match(k, pattern) then
+			if v then
+				return v
 		end
 	end
+end
+
+	return nil
 end
 
 -------------------

@@ -27,9 +27,9 @@ local function get_indexer(table, key)
 		if string.match(k, pattern) then
 			if v then
 				return v
+			end
 		end
 	end
-end
 
 	return nil
 end
@@ -42,22 +42,28 @@ local MI_META = {}
 MI_META.real_table = nil
 
 function MI_META:__index(key)
+	local real = rawget(self, "real_table")
+
 	-- Pass off indexing to the custom indexing function
-	local indexer = indexer_match(self.real_table, key)
+	local indexer = get_indexer(real, key)
 	if indexer then
-		return indexer(self.real_table)
+		return indexer(real)
 	end
 
 	-- Default table behavior
-	if not self.real_table[key] then
-		return nil
-	end
-
-	return self.real_table[key]
+	return real[key]
 end
 
 function MI_META:__newindex(key, value)
-	self.real_table[key] = value
+	local real = rawget(self, "real_table")
+
+	-- Metatable was applied without the wrapper function
+	if not real then
+		real = {}
+		rawset(self, "real_table", real)
+	end
+
+	real[key] = value
 end
 
 -------------------
